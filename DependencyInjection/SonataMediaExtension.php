@@ -11,6 +11,7 @@
 
 namespace Sonata\MediaBundle\DependencyInjection;
 
+use Sonata\ClassificationBundle\Model\Category;
 use Sonata\EasyExtendsBundle\Mapper\DoctrineCollector;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
@@ -87,6 +88,20 @@ class SonataMediaExtension extends Extension
 
         if (isset($bundles['SonataAdminBundle'])) {
             $loader->load(sprintf('%s_admin.xml', $config['db_driver']));
+        }
+
+        // Use default sonata-project classification if present and nothing against
+        if (false === $config['force_disable_category'] && interface_exists('Sonata\ClassificationBundle\Model\CategoryInterface') && (false === $config['category_manager'] || null === $config['category_manager'])) {
+            $loader->load('category.xml');
+            $container->getDefinition('sonata.media.manager.category')->addArgument(new Reference('sonata.classification.manager.category'));
+            $container->getDefinition('sonata.media.admin.media')->replaceArgument(4, $container->getDefinition('sonata.media.manager.category'));
+            // Set the default sonata classification class
+            if (null === $config['class']['category'] || false === $config['class']['category']) {
+                $config['class']['category'] = 'Application\\Sonata\\ClassificationBundle\\Entity\\Category';
+            }
+        } elseif (false === $config['force_disable_category'] && false !== $config['category_manager'] && null !== $config['category_manager']) {
+            $container->setAlias('sonata.media.manager.category', $config['category_manager']);
+            $container->getDefinition('sonata.media.admin.media')->replaceArgument(4, new Reference('sonata.media.manager.category'));
         }
 
         $this->configureFilesystemAdapter($container, $config);
@@ -254,7 +269,7 @@ class SonataMediaExtension extends Extension
             ),
         ));
 
-        if (interface_exists('Sonata\ClassificationBundle\Model\CategoryInterface')) {
+        if (false === $config['force_disable_category'] && null !== $config['class']['category'] && false !== $config['class']['category']) {
             $collector->addAssociation($config['class']['media'], 'mapManyToOne', array(
                 'fieldName'     => 'category',
                 'targetEntity'  => $config['class']['category'],

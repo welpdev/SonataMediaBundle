@@ -13,6 +13,10 @@ Full configuration options:
             gallery_has_media:  Application\Sonata\MediaBundle\Entity\GalleryHasMedia
             category:           Application\Sonata\ClassificationBundle\Entity\Category
 
+        force_disable_category:   false # true IF you really want to disable the relation with category
+        category_manager:   null # default set sonata.classification.manager.category if sonata-project/classification exists
+                                 # if you want to define your own category manager you need to implement \Sonata\MediaBundle\Model\CategoryManagerInterface
+
         default_context: default
         contexts:
             default:  # the default context is mandatory

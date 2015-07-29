@@ -34,6 +34,8 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('db_driver')->isRequired()->end()
                 ->scalarNode('default_context')->isRequired()->end()
+                ->scalarNode('category_manager')->defaultValue(null)->end()
+                ->scalarNode('force_disable_category')->defaultValue(false)->end()
             ->end()
         ;
 
@@ -400,7 +402,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('media')->defaultValue('Application\\Sonata\\MediaBundle\\Entity\\Media')->end()
                         ->scalarNode('gallery')->defaultValue('Application\\Sonata\\MediaBundle\\Entity\\Gallery')->end()
                         ->scalarNode('gallery_has_media')->defaultValue('Application\\Sonata\\MediaBundle\\Entity\\GalleryHasMedia')->end()
-                        ->scalarNode('category')->defaultValue('Application\\Sonata\\ClassificationBundle\\Entity\\Category')->end()
+                        ->scalarNode('category')->defaultValue(null)->end()
                     ->end()
                 ->end()
             ->end()
