@@ -63,3 +63,4 @@ script:
 
 notifications:
   webhooks: https://sonata-project.org/bundles/media/master/travis
+
