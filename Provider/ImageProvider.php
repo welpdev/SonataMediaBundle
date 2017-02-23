@@ -167,7 +167,11 @@ class ImageProvider extends FileProvider
         if ($format == 'reference') {
             $path = $this->getReferenceImage($media);
         } else {
-            $path = $this->thumbnail->generatePublicUrl($this, $media, $format);
+            if(!strpos(get_class($this->thumbnail), 'LiipImagineThumbnail')){
+                $path = $this->thumbnail->generatePublicUrl($this, $media, $format);
+            }else{
+                return $this->thumbnail->generatePublicUrl($this, $media, $format);
+            }
         }
 
         return $this->getCdn()->getPath($path, $media->getCdnIsFlushable());
